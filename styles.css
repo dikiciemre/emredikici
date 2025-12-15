@@ -27,3 +27,17 @@ body {
     padding: 20px;
     text-align: center;
 }
+
+
+/* --- Header ve Reset Butonu --- */
+.header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-controls h1 {
+    font-size: 24px;
+    color: var(--plank-color);
+}
