@@ -41,3 +41,21 @@ body {
     font-size: 24px;
     color: var(--plank-color);
 }
+
+
+.btn-reset {
+    background-color: white;
+    color: #e74c3c;
+    border: 2px solid #e74c3c;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-reset:hover {
+    background-color: #e74c3c;
+    color: white;
+    transform: scale(1.13);
+}
