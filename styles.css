@@ -57,7 +57,7 @@ body {
 .btn-reset:hover {
     background-color: #e74c3c;
     color: white;
-    transform: scale(1.13);
+    transform: scale(1.53);
 }
 
 /* --- İstatistik Paneli --- */
@@ -82,5 +82,5 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end; /* Her şeyi alta yasla */
+    justify-content: flex-end; 
 }
