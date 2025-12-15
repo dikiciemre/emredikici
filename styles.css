@@ -84,3 +84,26 @@ body {
     align-items: center;
     justify-content: flex-end; 
 }
+
+/* --- Tahterevalli (Plank) --- */
+#plank {
+    width: 500px;
+    height: 10px;
+    background-color: var(--plank-color);
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+    
+    /* Fizik Hareketi */
+    transform-origin: center center;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    user-select: none;
+    z-index: 2;
+
+    /* Tıklama Alanını Genişletme (Kullanıcı deneyimi için) */
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    background-clip: padding-box;
+    box-sizing: content-box; 
+}
+
