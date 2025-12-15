@@ -107,3 +107,9 @@ body {
     box-sizing: content-box; 
 }
 
+#plank:hover {
+    background-color: #5e4cff;
+   
+}
+
+
