@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elementleri tanılandı.
     const beam = document.getElementById('beam');
     const support = document.querySelector('.support');
     const txtLeft = document.getElementById('l-score');
@@ -9,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const LIMITS = { maxAngle: 30, minW: 1, maxW: 10 };
     let items = [];
 
-    // Başlangıç fonksiyonu tanımlmandı.
+    // LocalStorage verisini yükle
     const startApp = () => {
         const savedData = localStorage.getItem('seesaw_data');
         if (savedData) {
@@ -18,26 +17,44 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSystem();
     };
 
-    // Sistemi güncelle ve çiz
+    // Sistemi güncelle
     function updateSystem() {
-        // Hesaplamalar
         let torqueL = 0, torqueR = 0;
         let weightL = 0, weightR = 0;
+
+        // Çubuğun şu anki canlı genişliğini al (Responsive olması için şart)
+        const currentWidth = beam.offsetWidth;
+        const halfWidth = currentWidth / 2;
 
         beam.innerHTML = '';
 
         items.forEach(item => {
-            // HTML oluşturma alanı.
+            // Veri uyumluluğu (Eski versiyondan geçiş yapılıyorsa)
+            // Eğer veride 'factor' (oran) yoksa, eski pixel verisinden oran üret.
+            if (typeof item.factor === 'undefined') {
+                item.factor = item.dist / 250; // 250 eski varsayılan yarıçaptı
+            }
+
+            // HTML Oluştur
             const el = document.createElement('div');
             el.className = 'item';
             el.innerText = item.val;
-            el.style.left = item.pos + 'px';
-            el.style.transform = 'translateX(-50%)'; // Ortalamak için
+            
+            // Konumlandırma: Yüzde (%) bazlı yapıyoruz ki ekran küçülünce kaymasın.
+            // Merkez %50'dir. Factor -1 ile 1 arasındadır.
+            // Örnek: Factor 0.5 ise -> 50 + 25 = %75 (Sağ taraf)
+            const cssPercent = 50 + (item.factor * 50);
+            el.style.left = cssPercent + '%';
+            el.style.transform = 'translateX(-50%)';
+            
             beam.appendChild(el);
 
-            // Fizik hesapları yapılma alanı.
-            const force = item.val * Math.abs(item.dist);
-            if (item.dist < 0) {
+            // Fizik Hesapları
+            // Responsive olduğunda, çubuk küçülürse tork etkisi de azalır (Fizik kuralı: Mesafe azalırsa tork azalır)
+            const currentDist = item.factor * halfWidth; 
+            const force = item.val * Math.abs(currentDist);
+
+            if (item.factor < 0) {
                 torqueL += force;
                 weightL += item.val;
             } else {
@@ -48,58 +65,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Açı hesabı
         const diff = torqueR - torqueL;
-        let rot = diff / 10;
+        // Çubuk kısaldığında açı çok oynamasın diye genişliğe göre normalize ediyoruz
+        // (Bu detay gerçekçilik için önemli)
+        let rot = diff / (halfWidth / 25); 
         
-        // Clamp (Sınırlama)
         if (rot > LIMITS.maxAngle) rot = LIMITS.maxAngle;
         if (rot < -LIMITS.maxAngle) rot = -LIMITS.maxAngle;
 
-        // Görsel güncelleme
         beam.style.transform = `rotate(${rot}deg)`;
         txtLeft.innerText = `Sol Ağırlık: ${weightL} kg`;
         txtRight.innerText = `Sağ Ağırlık: ${weightR} kg`;
     }
 
-    // Tıklama Olayı burada yapıldı.
+    // Tıklama Olayı
     beam.addEventListener('click', (e) => {
-        const rect = support.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
+        // Tıklama anındaki güncel ölçüler
+        const rect = beam.getBoundingClientRect();
+        const width = rect.width;
+        const center = rect.left + (width / 2);
         
-        const clickPos = e.clientX;
-        const dist = clickPos - centerX;
+        // Tıklanan nokta ile merkez arasındaki fark (px cinsinden)
+        const rawDist = e.clientX - center;
+        
+        // Oran Hesapla (-1 en sol, 0 merkez, +1 en sağ)
+        // Bu oran ekran boyutu değişse bile sabittir.
+        const half = width / 2;
+        const factor = rawDist / half;
 
-        // Çok merkeze tıklanırsa işlem yapma
-        if (Math.abs(dist) < 5) return;
+        // Çok merkeze tıklanırsa iptal (%1 tolerans)
+        if (Math.abs(factor) < 0.02) return;
 
-        // Rastgele ağırlık
         const w = Math.floor(Math.random() * LIMITS.maxW) + LIMITS.minW;
-
-        // 500px genişlikteki çubukta pozisyon (merkez 250)
-        const cssPos = 250 + dist;
 
         items.push({
             id: Date.now(),
             val: w,
-            dist: dist,
-            pos: cssPos
+            factor: factor // Artık piksel (dist) değil, oran saklıyoruz
         });
 
         saveAndRender();
     });
 
-    // Reset Olayı burada tanımlandı.
     btnClear.addEventListener('click', () => {
         items = [];
         localStorage.removeItem('seesaw_data');
         updateSystem();
     });
 
-    // Helper fonksiyonu burada yazıldı. 
+    // Ekran boyutu değişirse (Telefon yan çevrilirse vs.) yeniden hesapla
+    window.addEventListener('resize', updateSystem);
+
     function saveAndRender() {
         localStorage.setItem('seesaw_data', JSON.stringify(items));
         updateSystem();
     }
 
-    // Başlatma.
     startApp();
 });
