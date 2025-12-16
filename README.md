@@ -44,4 +44,5 @@ Sistem, temel fizik kuralları üzerine kuruludur:
 3.  **Responsive Konumlandırma:**
     * Ekran boyutu değiştikçe blokların kaymaması için piksel tabanlı değil, **oran (ratio)** tabanlı bir sistem kullanılır. Blokların konumu, çubuğun merkezine olan yüzdelik uzaklıklarına göre saklanır.
 
-## 📂 Dosya Yapısı
+## 🖥️ Uygulama Ekran Görüntüsü
+<img src="./assets/ekran.png" width="600" alt="Proje Görüntüsü">
