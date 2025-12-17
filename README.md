@@ -48,7 +48,7 @@ Sistem, temel fizik kuralları üzerine kuruludur:
 <img width="600" height="400" alt="Proje_Ekran_Goruntusu" src="https://github.com/user-attachments/assets/b9271bae-cf6a-4fcf-ba6b-78ce9619b914" />
 
 ### 🤖 AI Assistance Declaration
-During the development process, I utilized AI tools (ChatGPT/Claude) for:
+During the development process, I utilized AI tools (ChatGPT) for:
 1.  **Refactoring & Optimization:** Making the code cleaner and more readable (e.g., converting repetitive logic into reusable functions).
 2.  **Documentation:** Generating the initial draft of this README file.
 The core logic and architectural decisions were implemented manually to ensure full control over the physics simulation.
